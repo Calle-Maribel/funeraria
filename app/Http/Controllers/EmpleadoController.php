@@ -14,7 +14,10 @@ class EmpleadoController extends Controller
      */
     public function index()
     {
-        //
+        //listar los primeros 5 empleados
+        $datos['empleados']=Empleado::paginate(5);
+
+        return view('empleado.index',$datos);
     }
 
     /**
@@ -25,6 +28,7 @@ class EmpleadoController extends Controller
     public function create()
     {
         //
+        return view('empleado.create');
     }
 
     /**
@@ -35,7 +39,21 @@ class EmpleadoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //recibiendo los datos del formulario por el metodo POST
+       // $datosEmpleado = request()->all();
+
+        // recibiendo todosdatos del formulario menos el de token
+        $datosEmpleado = request()->except('_token');
+
+        //Verifica si a seleccionado alguna foto
+        if ($request->hasFile('Foto')) {
+            $datosEmpleado['Foto']=$request->file('Foto')->store('uploads','public');
+        }
+
+        //insertando a la base de datos los datos obtenidos
+        Empleado::insert($datosEmpleado);
+
+        return response()->json($datosEmpleado);
     }
 
     /**
@@ -78,8 +96,10 @@ class EmpleadoController extends Controller
      * @param  \App\Models\Empleado  $empleado
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Empleado $empleado)
+    public function destroy($id)
     {
-        //
+        //elimina el registro que se esta mandando del listado con el boton de borrar
+        Empleado::destroy($id);
+        return redirect('empleado');//despues de elimnar redireccionar al listado
     }
 }
