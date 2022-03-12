@@ -47,6 +47,7 @@ class EmpleadoController extends Controller
 
         //Verifica si a seleccionado alguna foto
         if ($request->hasFile('Foto')) {
+            //almacena la imagen en storage\app\public\uploads
             $datosEmpleado['Foto']=$request->file('Foto')->store('uploads','public');
         }
 
